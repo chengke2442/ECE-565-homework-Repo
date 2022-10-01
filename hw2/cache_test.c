@@ -52,17 +52,34 @@ int main(int argc, char *argv[]) {
   int i;
   uint64_t index = 0;
   struct timespec start_time, end_time;
-  
+ 
+ 
   num_elements = atoi(argv[1]);
   num_traversals = atoi(argv[2]);
   array = (uint64_t*)malloc(num_elements * sizeof(uint64_t) * stride);
-
+  int temp1 = 0;
+  int temp2 = 0;
   init_array();
 
   int total_iters = num_elements * num_traversals;
   
   clock_gettime(CLOCK_MONOTONIC, &start_time);
   for (i=0; i<total_iters; i++) {
+  for (int i = 0;i<num_elements;i++)
+  {
+    // a.
+    // array[i] = i;
+
+    // b.
+    // array[i] = i;
+    // temp1 = array[i];
+
+    // c.
+     temp1 = array[i];
+     array[i] = i;
+     temp2 = array[i];    
+    
+    /*    index = array[index];
     index = array[index];
     index = array[index];
     index = array[index];
@@ -77,8 +94,8 @@ int main(int argc, char *argv[]) {
     index = array[index];
     index = array[index];
     index = array[index];
-    index = array[index];
-    index = array[index];
+    index = array[index];*/
+  }
   }
   clock_gettime(CLOCK_MONOTONIC, &end_time);
 
