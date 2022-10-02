@@ -56,16 +56,16 @@ int main(int argc, char *argv[]) {
  
   num_elements = atoi(argv[1]);
   num_traversals = atoi(argv[2]);
-  array = (uint64_t*)malloc(num_elements * sizeof(uint64_t) * stride);
-  int temp1 = 0;
-  int temp2 = 0;
-  init_array();
+  array = (uint64_t*)malloc(num_elements * sizeof(uint64_t));
+  uint64_t temp1 = 0;
+  uint64_t temp2 = 0;
+  //  init_array();
 
   int total_iters = num_elements * num_traversals;
   
   clock_gettime(CLOCK_MONOTONIC, &start_time);
   for (i=0; i<total_iters; i++) {
-    for (int i = 0;i<num_elements;i++)
+    for (uint64_t j = 0;j<num_elements;j++)
       {
 	// a.
 	//array[i] = i;
@@ -75,9 +75,9 @@ int main(int argc, char *argv[]) {
 	//temp1 = array[i];
 
 	// c.
-	temp1 = array[i];
-	array[i] = i;
-	temp2 = array[i];    
+	temp1 = array[j];
+	array[j] = j;
+	temp2 = array[j];    
     
    
       }
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
 
   double elapsed_ns = calc_time(start_time, end_time);
   // printf("Time = %f\n", elapsed_ns);
-  printf("bandwidth = %f GB/s\n", (((uint64_t)num_elements * (uint64_t)num_traversals * 8*3))/elapsed_ns);
+  printf("bandwidth = %f GB/s\n", (((uint64_t)num_elements * (uint64_t)total_iters * 8*3))/elapsed_ns);
   //printf("end index = %lu\n", index);
 
   free(array);
