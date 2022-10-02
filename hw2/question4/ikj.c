@@ -22,7 +22,7 @@ double calc_time(struct timespec start, struct timespec end) {
 }
 
 void init_array() {
-  for (int i = 0;i<1024;i++)
+  for (uint64_t i = 0;i<1024;i++)
     {
       for (int j = 0;j<1024;j++)
 	{
@@ -32,7 +32,7 @@ void init_array() {
 
   for (int i = 0;i<1024;i++)
     {
-      for (int j = 0;j<1024;j++)
+      for (uint64_t j = 0;j<1024;j++)
 	{
 	  B[i][j] = j;
 	  
@@ -49,6 +49,80 @@ void init_array() {
   
 }
 
+double ijk()
+{
+  int i,j,k;
+  uint64_t sum;
+  struct timespec start_time, end_time;  
+    clock_gettime(CLOCK_MONOTONIC, &start_time);
+  // i - j - k
+  for (i=0; i<1024; i++) {
+    for (j = 0;j<1024;j++)
+    {
+      sum = 0;
+      for (k = 0;k<1024;k++)
+	{
+	  sum+=A[i][k]*B[i][k];
+	}
+      C[i][j] = sum;
+    }
+    }
+clock_gettime(CLOCK_MONOTONIC, &end_time);
+
+  double elapsed_ns = calc_time(start_time, end_time);
+  return elapsed_ns;
+}
+
+
+
+double ikj()
+{
+  int i,j,k;
+  uint64_t sum;
+  struct timespec start_time, end_time;  
+    clock_gettime(CLOCK_MONOTONIC, &start_time);
+  // i - j - k
+  for (i = 0;i<1024;i++)
+    {
+      for ( k = 0;k<1024;k++)
+	{
+	  sum = A[i][k];
+	  for (j = 0;j<1024;j++)
+	    {
+	       C[i][j] += sum * B[k][j];
+	    }
+	  
+	}
+    }
+clock_gettime(CLOCK_MONOTONIC, &end_time);
+
+  double elapsed_ns = calc_time(start_time, end_time);
+  return elapsed_ns;
+}
+
+double jki()
+{
+  int i,j,k;
+  uint64_t sum;
+  struct timespec start_time, end_time;  
+    clock_gettime(CLOCK_MONOTONIC, &start_time);
+  for (j = 0;j<1024;j++)
+    {
+      for(k = 0;k<1024;k++)
+	{
+	  sum = B[k][j];
+	  for (i = 0;i<1024;i++)
+	    {
+	      C[i][j] += sum * A[i][k]; 
+	    }
+	}
+    }
+clock_gettime(CLOCK_MONOTONIC, &end_time);
+
+  double elapsed_ns = calc_time(start_time, end_time);
+  return elapsed_ns;
+}
+
 
 int main(int argc, char *argv[]) {
 
@@ -61,9 +135,9 @@ int main(int argc, char *argv[]) {
    
   init_array();
 
-  int i,j,k;
-  uint64_t sum;
-  clock_gettime(CLOCK_MONOTONIC, &start_time);
+  //int i,j,k;
+  //uint64_t sum;
+  //  clock_gettime(CLOCK_MONOTONIC, &start_time);
   // i - j - k
   /* for (i=0; i<1024; i++) {
     for (int j = 0;j<1024;j++)
@@ -79,7 +153,7 @@ int main(int argc, char *argv[]) {
 
 
   // i - k - j
-   for (int i = 0;i<1024;i++)
+  /* for (int i = 0;i<1024;i++)
     {
       for (int k = 0;k<1024;k++)
 	{
@@ -91,6 +165,7 @@ int main(int argc, char *argv[]) {
 	  
 	}
     }
+  */
 
   // j - k - i
   /*  for (int j = 0;j<1024;j++)
@@ -104,12 +179,14 @@ int main(int argc, char *argv[]) {
 	    }
 	}
 	}*/
-  clock_gettime(CLOCK_MONOTONIC, &end_time);
+  // clock_gettime(CLOCK_MONOTONIC, &end_time);
 
-  double elapsed_ns = calc_time(start_time, end_time);
-  printf("Time = %f\n", elapsed_ns);
-  printf("NS per load = %f\n", (elapsed_ns / ((uint64_t)num_elements * (uint64_t)num_traversals * 16)));
-  printf("end index = %lu\n", index);
+  // double elapsed_ns = calc_time(start_time, end_time);
+  printf("Time for i-j-k = %f\n", ijk()/1000000000);
+   printf("Time for i-k-j = %f\n", ikj()/1000000000);
+  printf("Time for j-k-i = %f\n",jki()/1000000000);
+  //  printf("NS per load = %f\n", (elapsed_ns / ((uint64_t)num_elements * (uint64_t)num_traversals * 16)));
+  // printf("end index = %lu\n", index);
 
   //  free();
   return 0;
