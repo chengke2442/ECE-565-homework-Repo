@@ -65,44 +65,29 @@ int main(int argc, char *argv[]) {
   
   clock_gettime(CLOCK_MONOTONIC, &start_time);
   for (i=0; i<total_iters; i++) {
-  for (int i = 0;i<num_elements;i++)
-  {
-    // a.
-    // array[i] = i;
+    for (int i = 0;i<num_elements;i++)
+      {
+	// a.
+	//array[i] = i;
 
-    // b.
-    // array[i] = i;
-    // temp1 = array[i];
+	// b.
+	//array[i] = i;
+	//temp1 = array[i];
 
-    // c.
-     temp1 = array[i];
-     array[i] = i;
-     temp2 = array[i];    
+	// c.
+	temp1 = array[i];
+	array[i] = i;
+	temp2 = array[i];    
     
-    /*    index = array[index];
-    index = array[index];
-    index = array[index];
-    index = array[index];
-    index = array[index];
-    index = array[index];
-    index = array[index];
-    index = array[index];
-    index = array[index];
-    index = array[index];
-    index = array[index];
-    index = array[index];
-    index = array[index];
-    index = array[index];
-    index = array[index];
-    index = array[index];*/
-  }
+   
+      }
   }
   clock_gettime(CLOCK_MONOTONIC, &end_time);
 
   double elapsed_ns = calc_time(start_time, end_time);
-  printf("Time = %f\n", elapsed_ns);
-  printf("NS per load = %f\n", (elapsed_ns / ((uint64_t)num_elements * (uint64_t)num_traversals * 16)));
-  printf("end index = %lu\n", index);
+  // printf("Time = %f\n", elapsed_ns);
+  printf("bandwidth = %f GB/s\n", (((uint64_t)num_elements * (uint64_t)num_traversals * 8*3))/elapsed_ns);
+  //printf("end index = %lu\n", index);
 
   free(array);
   return 0;

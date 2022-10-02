@@ -1,0 +1,8 @@
+1:1.c
+	gcc -O2 -o 1 1.c -lrt
+
+2:2.c
+	gcc -O2 -o 2 2.c -lrt
+
+3:3.c
+	gcc -O2 -o 3 3.c -lrt

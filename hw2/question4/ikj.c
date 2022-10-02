@@ -78,20 +78,32 @@ int main(int argc, char *argv[]) {
     }*/
 
 
-  // k - i - j
-
-  for (int k = 0;k<1024;k++)
+  // i - k - j
+   for (int i = 0;i<1024;i++)
     {
-      for (int i = 0;i<1024;i++)
+      for (int k = 0;k<1024;k++)
 	{
 	  sum = A[i][k];
 	  for (int j = 0;j<1024;j++)
 	    {
-	      C[i][j] += sum * B[k][j];
+	       C[i][j] += sum * B[k][j];
 	    }
 	  
 	}
     }
+
+  // j - k - i
+  /*  for (int j = 0;j<1024;j++)
+    {
+      for(int k = 0;k<1024;k++)
+	{
+	  sum = B[k][j];
+	  for (int i = 0;i<1024;i++)
+	    {
+	      C[i][j] += sum * A[i][k]; 
+	    }
+	}
+	}*/
   clock_gettime(CLOCK_MONOTONIC, &end_time);
 
   double elapsed_ns = calc_time(start_time, end_time);
