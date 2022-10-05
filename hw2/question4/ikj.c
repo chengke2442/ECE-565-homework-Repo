@@ -7,9 +7,9 @@ const int stride = 16;
 int num_elements;
 int num_traversals;
 
-uint64_t A[1024][1024];
-uint64_t B[1024][1024];
-uint64_t C[1024][1024]; 
+double A[1024][1024];
+double B[1024][1024];
+double C[1024][1024]; 
 
 double calc_time(struct timespec start, struct timespec end) {
   double start_sec = (double)start.tv_sec*1000000000.0 + (double)start.tv_nsec;
@@ -26,7 +26,7 @@ void init_array() {
     {
       for (int j = 0;j<1024;j++)
 	{
-	  A[i][j] = i;
+	  A[i][j] = 2;
 	}
     }
 
@@ -34,7 +34,7 @@ void init_array() {
     {
       for (uint64_t j = 0;j<1024;j++)
 	{
-	  B[i][j] = j;
+	  B[i][j] = 4;
 	  
 	}
     }
@@ -49,10 +49,46 @@ void init_array() {
   
 }
 
+double ijk_tiling(){
+  uint64_t i,j,k;
+  uint64_t ii,jj,kk;
+  double sum;
+  uint64_t block_size =64;
+  struct timespec start_time,end_time;
+  clock_gettime(CLOCK_MONOTONIC, &start_time);
+  for (i = 0;i<1024;i+=block_size)
+    {
+      for (j = 0;j<1024;j+=block_size)
+	{
+	  for (k = 0;k<1024;k+=block_size)
+	    {
+	  for (ii = i;ii<i+block_size;ii++)
+	    {
+	      for (jj = j;jj<j+block_size;jj++)
+		{
+		      for (kk = k;kk<k+block_size;kk++)
+			{
+			  
+			  // sum+=A[ii][kk] * B[kk][jj];
+			   C[ii][jj] +=A[ii][kk]*B[kk][jj];
+			}
+       		    }
+		 
+		}
+	    }
+	    
+	}
+    }
+
+
+  clock_gettime(CLOCK_MONOTONIC,&end_time);
+  double e = calc_time(start_time,end_time);
+  return e;
+}
 double ijk()
 {
-  int i,j,k;
-  uint64_t sum;
+  uint64_t i,j,k;
+  double sum;
   struct timespec start_time, end_time;  
     clock_gettime(CLOCK_MONOTONIC, &start_time);
   // i - j - k
@@ -62,7 +98,7 @@ double ijk()
       sum = 0;
       for (k = 0;k<1024;k++)
 	{
-	  sum+=A[i][k]*B[i][k];
+	  sum+=A[i][k]*B[k][j];
 	}
       C[i][j] = sum;
     }
@@ -74,17 +110,16 @@ clock_gettime(CLOCK_MONOTONIC, &end_time);
 }
 
 
-
 double ikj()
 {
-  int i,j,k;
-  uint64_t sum;
+ uint64_t i,j,k;
+  double sum;
   struct timespec start_time, end_time;  
     clock_gettime(CLOCK_MONOTONIC, &start_time);
   // i - j - k
-  for (i = 0;i<1024;i++)
+  for (k = 0;k<1024;k++)
     {
-      for ( k = 0;k<1024;k++)
+      for ( i = 0;i<1024;i++)
 	{
 	  sum = A[i][k];
 	  for (j = 0;j<1024;j++)
@@ -102,8 +137,8 @@ clock_gettime(CLOCK_MONOTONIC, &end_time);
 
 double jki()
 {
-  int i,j,k;
-  uint64_t sum;
+  uint64_t i,j,k;
+  double sum;
   struct timespec start_time, end_time;  
     clock_gettime(CLOCK_MONOTONIC, &start_time);
   for (j = 0;j<1024;j++)
@@ -131,7 +166,7 @@ int main(int argc, char *argv[]) {
  
  
   num_elements = 1024;
-  
+  int x = atoi(argv[1]); 
    
   init_array();
 
@@ -182,9 +217,17 @@ int main(int argc, char *argv[]) {
   // clock_gettime(CLOCK_MONOTONIC, &end_time);
 
   // double elapsed_ns = calc_time(start_time, end_time);
-  printf("Time for i-j-k = %f\n", ijk()/1000000000);
-   printf("Time for i-k-j = %f\n", ikj()/1000000000);
-  printf("Time for j-k-i = %f\n",jki()/1000000000);
+  if (x == 1){
+    printf("Time for i-j-k = %f\n", ijk()/1000000000);
+  }
+  else if (x == 2){
+    printf("Time for i-k-j = %f\n", ikj()/1000000000);
+  } else if (x == 3){
+     printf("Time for j-k-i = %f\n",jki()/1000000000);
+   }
+  else if (x == 4){
+     printf("Time for ijk_tiling = %f\n",ijk_tiling()/1000000000); 
+   }
   //  printf("NS per load = %f\n", (elapsed_ns / ((uint64_t)num_elements * (uint64_t)num_traversals * 16)));
   // printf("end index = %lu\n", index);
 
