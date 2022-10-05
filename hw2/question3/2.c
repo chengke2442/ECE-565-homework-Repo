@@ -61,10 +61,10 @@ int main(int argc, char *argv[]) {
   uint64_t temp2 = 0;
   // init_array();
 
-  int total_iters = num_elements * num_traversals;
+  // int total_iters = num_elements * num_traversals;
   
   clock_gettime(CLOCK_MONOTONIC, &start_time);
-  for (i=0; i<total_iters; i++) {
+  for (i=0; i<num_traversals; i++) {
     for (uint64_t j = 0;j<num_elements;j++)
       {
 	// a.
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
 
   double elapsed_ns = calc_time(start_time, end_time);
   // printf("Time = %f\n", elapsed_ns);
-  printf("bandwidth = %f GB/s\n", (((uint64_t)num_elements * (uint64_t)total_iters * 8*2))/elapsed_ns);
+  printf("bandwidth = %f GB/s\n", (((uint64_t)num_elements * (uint64_t)num_traversals * 8*2))/elapsed_ns);
   //printf("end index = %lu\n", index);
 
   free(array);
